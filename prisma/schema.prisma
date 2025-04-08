@@ -8,16 +8,36 @@ datasource db {
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  published Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id             Int              @id @default(autoincrement())
+  title          String
+  content        String
+  published      Boolean          @default(true)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  author         User             @relation(fields: [authorId], references: [id])
+  authorId       Int
+  postCategories PostCategories[]
 
   @@map("posts")
+}
+
+model Category {
+  id             Int              @id @default(autoincrement())
+  name           String
+  postCategories PostCategories[]
+
+  @@map("categories")
+}
+
+model PostCategories {
+  id         Int      @id @default(autoincrement())
+  postId     Int
+  categoryId Int
+  Category   Category @relation(fields: [categoryId], references: [id])
+  Post       Post     @relation(fields: [postId], references: [id])
+
+  @@unique([postId, categoryId])
+  @@map("post_categories")
 }
 
 model Profile {
@@ -38,4 +58,3 @@ model User {
 
   @@map("users")
 }
-
